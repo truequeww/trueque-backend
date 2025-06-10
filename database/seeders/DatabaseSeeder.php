@@ -10,13 +10,12 @@ use App\Models\Material;
 use App\Models\Color;
 use App\Models\Condition;
 use App\Models\OfferStatus;
-use Faker\Factory as Faker; 
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        $faker = Faker::create();
 
         // Create categories
         $categories = [
@@ -65,7 +64,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'language' => 'en',
             'location' => json_encode([
-                'street' => $faker->streetAddress(),
+                'street' => $this->faker->streetAddress,
                 'latitude' => 40.7128,
                 'longitude' => -74.0060
             ])
@@ -79,7 +78,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'language' => 'es',
             'location' => json_encode([
-                'street' => $faker->streetAddress(),
+                'street' => $this->faker->streetAddress,
                 'latitude' => 40.7128,
                 'longitude' => -74.0060
             ])
@@ -95,7 +94,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'language' => 'en',
             'location' => json_encode([
-                'street' => $faker->streetAddress(),
+                'street' => $this->faker->streetAddress,
                 'latitude' => 40.7128,
                 'longitude' => -74.0060
             ])
@@ -110,7 +109,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'language' => 'es',
             'location' => json_encode([
-                'street' => $faker->streetAddress(),
+                'street' => $this->faker->streetAddress,
                 'latitude' => 19.4326,
                 'longitude' => -99.1332
             ])
@@ -281,7 +280,7 @@ class DatabaseSeeder extends Seeder
                 'material_id' => Material::where('name', $item['material'])->first()->id,
                 'color_id' => Color::where('name', $item['color'])->first()->id,
                 'location' => json_encode([
-                    'street' => $faker->streetAddress(),
+                    'street' => $this->faker->streetAddress,
                     'latitude' => $location['lat'] + (rand(-100, 100) / 1000),
                     'longitude' => $location['lng'] + (rand(-100, 100) / 1000),
                 ]),
@@ -385,7 +384,7 @@ class DatabaseSeeder extends Seeder
                 'material_id' => Material::where('name', $item['material'])->first()->id,
                 'color_id' => Color::where('name', $item['color'])->first()->id,
                 'location' => json_encode([
-                    'street' => $faker->streetAddress(),
+                    'street' => $this->faker->streetAddress,
                     'latitude' => $location['lat'] + (rand(-100, 100) / 1000),
                     'longitude' => $location['lng'] + (rand(-100, 100) / 1000),
                 ]),
@@ -470,7 +469,7 @@ class DatabaseSeeder extends Seeder
                 'material_id' => Material::where('name', $item['material'])->first()->id,
                 'color_id' => Color::where('name', $item['color'])->first()->id,
                 'location' => json_encode([
-                    'street' => $faker->streetAddress(),
+                    'street' => $this->faker->streetAddress,
                     'latitude' => 19.4326,
                     'longitude' => -99.1332,
                 ]),
@@ -555,7 +554,7 @@ class DatabaseSeeder extends Seeder
                 'material_id' => Material::where('name', $item['material'])->first()->id,
                 'color_id' => Color::where('name', $item['color'])->first()->id,
                 'location' => json_encode([
-                    'street' => $faker->streetAddress(),
+                    'street' => $this->faker->streetAddress,
                     'latitude' => 19.4326,
                     'longitude' => -99.1332,
                 ]),
