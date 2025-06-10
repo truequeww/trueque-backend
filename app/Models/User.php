@@ -9,10 +9,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\CustomVerifyEmail;
+use ESolution\DBEncryption\Traits\EncryptedAttribute;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
+    use EncryptedAttribute;
+
+    protected $encryptable = [
+        'name',
+        'profile_picture',
+    ];
 
     protected $table = 'users';
 

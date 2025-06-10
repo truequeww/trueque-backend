@@ -1,4 +1,6 @@
 <?php
+
+
 namespace Database\Factories;
 
 use App\Models\Thing;
@@ -38,3 +40,5 @@ class ThingFactory extends Factory
         ];
     }
 }
+
+

@@ -72,11 +72,6 @@ class AuthController extends Controller
 
         self::sendVerificationCode($user);
 
-        $chat = Chat::create([
-            'user1_id' => $user->id,
-            'user2_id' => 1,
-        ]);
-
         if($validated['language']=="es"){
             $messages = [
                 "🐾 ¡Hola, compañero de intercambio! ¡Soy yo, Truequi! 🐶✨",
@@ -102,6 +97,11 @@ class AuthController extends Controller
             ];
             $truequi_id = 1;
         }
+
+        $chat = Chat::create([
+            'user1_id' => $user->id,
+            'user2_id' => $truequi_id,
+        ]);
 
         foreach ($messages as $content) {
             Message::create([
@@ -389,35 +389,87 @@ class AuthController extends Controller
     //chambonada temporal que hay que arreglar
 
 
+    // public function getFilteredThings($uid)
+    // {
+    //     $userId = $uid; // Get the authenticated user's ID
+
+    //     // Get IDs of liked and disliked things
+    //     $likedThingIds = Like::where('user_id', $userId)->pluck('thing_id')->toArray();
+    //     $dislikedThingIds = Dislike::where('user_id', $userId)->pluck('thing_id')->toArray();
+
+    //     // Build the query for things
+    //     $query = Thing::where('user_id', '!=', $userId) // Not owned by the user
+    //         ->whereNotIn('id', $likedThingIds) // Not liked by the user
+    //         ->whereNotIn('id', $dislikedThingIds) // Not disliked by the user
+    //         ->where('availability', true)
+    //         ->with('condition'); // Only retrieve available things
+
+    //     // Get the filtered things
+    //     $things = $query->get();
+
+    //     $mythings = Thing::where('user_id', $userId)->pluck('id');
+
+    //     $things->each(function ($thing) use ($mythings) {
+
+    //         $thing->liked = Like::where('user_id', $thing->user_id)
+    //                         ->whereIn('thing_id', $mythings)
+    //                         ->exists();
+
+    //         $thing->swiped = false;
+    //         $thing->swipedCalled = false;
+
+    //     });
+
+    //     return response()->json($things);
+    // }
+
     public function getFilteredThings($uid)
     {
-        $userId = $uid; // Get the authenticated user's ID
+        $userId = $uid;
 
         // Get IDs of liked and disliked things
         $likedThingIds = Like::where('user_id', $userId)->pluck('thing_id')->toArray();
         $dislikedThingIds = Dislike::where('user_id', $userId)->pluck('thing_id')->toArray();
 
-        // Build the query for things
-        $query = Thing::where('user_id', '!=', $userId) // Not owned by the user
-            ->whereNotIn('id', $likedThingIds) // Not liked by the user
-            ->whereNotIn('id', $dislikedThingIds) // Not disliked by the user
+        // Get the authenticated user's location
+        $user = User::find($userId);
+        $userLocation = json_decode($user->location, true);
+
+        if (!$userLocation || !isset($userLocation['latitude']) || !isset($userLocation['longitude'])) {
+            return response()->json(['error' => 'Invalid user location'], 400);
+        }
+
+        $lat = $userLocation['latitude'];
+        $lon = $userLocation['longitude'];
+
+        // Build the query to find the 30 closest Things
+        $things = Thing::where('user_id', '!=', $userId)
+            ->whereNotIn('id', $likedThingIds)
+            ->whereNotIn('id', $dislikedThingIds)
             ->where('availability', true)
-            ->with('condition'); // Only retrieve available things
+            ->with('condition')
+            ->selectRaw("
+                things.*,
+                (6371 * acos(
+                    cos(radians(?)) * cos(radians(JSON_EXTRACT(location, '$.latitude'))) *
+                    cos(radians(JSON_EXTRACT(location, '$.longitude')) - radians(?)) +
+                    sin(radians(?)) * sin(radians(JSON_EXTRACT(location, '$.latitude')))
+                )) AS distance
+            ", [$lat, $lon, $lat])
+            ->orderBy('distance')
+            ->limit(30)
+            ->get();
 
-        // Get the filtered things
-        $things = $query->get();
-
+        // Get the user's own things
         $mythings = Thing::where('user_id', $userId)->pluck('id');
 
+        // Add liked and swiped flags
         $things->each(function ($thing) use ($mythings) {
-
             $thing->liked = Like::where('user_id', $thing->user_id)
-                            ->whereIn('thing_id', $mythings)
-                            ->exists();
-
+                                ->whereIn('thing_id', $mythings)
+                                ->exists();
             $thing->swiped = false;
             $thing->swipedCalled = false;
-
         });
 
         return response()->json($things);

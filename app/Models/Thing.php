@@ -4,10 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use ESolution\DBEncryption\Traits\EncryptedAttribute;
 
 class Thing extends Model
 {
     use HasFactory;
+    use EncryptedAttribute;
+
+    protected $encryptable = [
+        'imagesUrl',
+    ];
 
     protected $fillable = [
         'user_id',
