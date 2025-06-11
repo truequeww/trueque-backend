@@ -25,7 +25,7 @@
         }
 
         .email-header {
-            background-color: #347d27;
+            background-color: #2c3e50;
             color: white;
             text-align: center;
             padding: 20px 0;
@@ -58,7 +58,7 @@
         }
 
         .email-footer a {
-            color: #347d27;
+            color: #2c3e50;
             text-decoration: none;
         }
 
