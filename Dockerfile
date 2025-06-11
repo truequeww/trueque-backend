@@ -32,8 +32,8 @@ RUN chown -R www-data:www-data \
     /var/www/bootstrap/cache
 
 # Expose port for Railway
-EXPOSE 8000
+EXPOSE 9000
 
 # 🚀 Start server (not using php artisan serve!)
 # CMD php -S 0.0.0.0:8000 -t public
-CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=${PORT}
+CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=9000
