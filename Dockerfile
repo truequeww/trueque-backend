@@ -1,19 +1,9 @@
-# Stage 1: Build Composer dependencies
-FROM composer:2 AS build
-
-WORKDIR /app
-
-COPY . .
-
-RUN composer install --no-dev --optimize-autoloader
-
-
-# Stage 2: Set up Nginx + PHP
 FROM php:8.2-fpm
 
-# Install dependencies
+# Install system packages
 RUN apt-get update && apt-get install -y \
     nginx \
+    supervisor \
     git \
     curl \
     zip \
@@ -24,24 +14,30 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Copy Laravel code from build stage
-COPY --from=build /app /var/www
-
-# Set working dir
+# Set working directory
 WORKDIR /var/www
+
+# Copy Laravel project
+COPY . .
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage /var/www/bootstrap/cache
 
-# Copy nginx config
+# Copy custom nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port
+# Copy supervisord config
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Expose the dynamic port
 EXPOSE 8080
 
-# Start both PHP and Nginx
-CMD php artisan config:cache \
-    && php artisan route:cache \
-    && service nginx start \
-    && php-fpm
+# Command to run all services
+CMD ["/usr/bin/supervisord"]
