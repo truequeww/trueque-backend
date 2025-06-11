@@ -32,4 +32,4 @@ RUN chown -R www-data:www-data /var/www \
 EXPOSE 8000
 
 # Start Laravel using PHP's built-in server (suitable for Railway)
-CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=8000
+CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=${PORT}
