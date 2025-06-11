@@ -120,7 +120,7 @@ class DatabaseSeeder extends Seeder
 
         // Create 100 things for User 2 (Spanish)
         $this->createUser2Things($user2);
-
+//t
         $this->createTruequiEnThings($truequiEn);
 
         $this->createTruequiEsThings($truequiEs);
