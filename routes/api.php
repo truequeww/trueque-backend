@@ -93,3 +93,4 @@ Route::get('filters', [FilterController::class, 'index']);
 // Route::apiResource('materials', MaterialController::class);
 // Route::apiResource('colors', ColorController::class);
 // Route::apiResource('conditions', ConditionController::class);
+//
