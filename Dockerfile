@@ -35,4 +35,5 @@ RUN chown -R www-data:www-data \
 EXPOSE 8000
 
 # 🚀 Start server (not using php artisan serve!)
-CMD php -S 0.0.0.0:8000 -t public
+# CMD php -S 0.0.0.0:8000 -t public
+CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=${PORT}
