@@ -153,6 +153,14 @@ class ThingController extends Controller
         try {
             $userId = auth()->id();
             $thing = Thing::where('id', $id)->where('user_id', $userId)->firstOrFail();
+
+            // Extract the S3 key from the full URL
+            $parsedUrl = parse_url($thing->imagesUrl, PHP_URL_PATH); // e.g. /bucket-name/things/image.jpg
+            $key = ltrim($parsedUrl, '/'); // remove leading slash
+
+            // Delete from S3
+            Storage::disk('s3')->delete($key);
+
             $thing->delete();
             return response()->json(['success' => true, 'message' => 'Thing deleted successfully']);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

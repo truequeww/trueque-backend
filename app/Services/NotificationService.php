@@ -23,56 +23,56 @@ class NotificationService
 
     public function sendNotificationToUser(User $user, string $title, string $body, ?array $data = [])
     {
+        return true;
+        // event(new MessageSent($user->id, $data ));
 
-        event(new MessageSent($user->id, $data ));
+        // $tokens = $user->fcmTokens()->whereNotNull('token')->pluck('token')->filter()->unique()->toArray();
 
-        $tokens = $user->fcmTokens()->whereNotNull('token')->pluck('token')->filter()->unique()->toArray();
+        // if (empty($tokens)) {
+        //     Log::info("No FCM tokens found for user ID: {$user->id}");
+        //     return false;
+        // }
 
-        if (empty($tokens)) {
-            Log::info("No FCM tokens found for user ID: {$user->id}");
-            return false;
-        }
+        // // Basic notification payload (for system tray when app is in background)
+        // $notificationPayload = FirebaseNotification::create($title, $body);
 
-        // Basic notification payload (for system tray when app is in background)
-        $notificationPayload = FirebaseNotification::create($title, $body);
+        // // Construct the message
+        // $message = CloudMessage::new()
+        //     ->withNotification($notificationPayload) // For background display & foreground `notification` object
+        //     ->withData($data ?: []); // Custom key-value pairs for in-app handling
 
-        // Construct the message
-        $message = CloudMessage::new()
-            ->withNotification($notificationPayload) // For background display & foreground `notification` object
-            ->withData($data ?: []); // Custom key-value pairs for in-app handling
+        // // Optional: Platform-specific configurations
+        // // $message = $message->withAndroidConfig(AndroidConfig::new()->...);
+        // // $message = $message->withApnsConfig(ApnsConfig::new()->...);
 
-        // Optional: Platform-specific configurations
-        // $message = $message->withAndroidConfig(AndroidConfig::new()->...);
-        // $message = $message->withApnsConfig(ApnsConfig::new()->...);
+        // try {
+        //     if (count($tokens) === 1) {
+        //         $report = $this->messaging->send(CloudMessage::withTarget('token', $tokens[0])
+        //             ->withNotification($notificationPayload)
+        //             ->withData($data ?: [])
+        //         );
+        //         Log::info('Single FCM message sent.', ['report' => $report, 'user_id' => $user->id, 'token' => $tokens[0]]);
+        //     } else {
+        //         $report = $this->messaging->sendMulticast($message, $tokens);
+        //         Log::info('Multicast FCM message report.', [
+        //             'user_id' => $user->id,
+        //             'successful_sends' => $report->successes()->count(),
+        //             'failed_sends' => $report->failures()->count()
+        //         ]);
+        //     }
 
-        try {
-            if (count($tokens) === 1) {
-                $report = $this->messaging->send(CloudMessage::withTarget('token', $tokens[0])
-                    ->withNotification($notificationPayload)
-                    ->withData($data ?: [])
-                );
-                Log::info('Single FCM message sent.', ['report' => $report, 'user_id' => $user->id, 'token' => $tokens[0]]);
-            } else {
-                $report = $this->messaging->sendMulticast($message, $tokens);
-                Log::info('Multicast FCM message report.', [
-                    'user_id' => $user->id,
-                    'successful_sends' => $report->successes()->count(),
-                    'failed_sends' => $report->failures()->count()
-                ]);
-            }
+        //     // Handle invalid tokens based on the report
+        //     // if ($report->hasFailures()) {
+        //     //     $this->handleFailedTokens($report, $user);
+        //     // }
+        //     return true;
 
-            // Handle invalid tokens based on the report
-            // if ($report->hasFailures()) {
-            //     $this->handleFailedTokens($report, $user);
-            // }
-            return true;
-
-        } catch (\Kreait\Firebase\Exception\MessagingException $e) {
-            Log::error('FCM Sending Error (MessagingException): ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-        } catch (\Exception $e) {
-            Log::error('Generic FCM Sending Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-        }
-        return false;
+        // } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+        //     Log::error('FCM Sending Error (MessagingException): ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+        // } catch (\Exception $e) {
+        //     Log::error('Generic FCM Sending Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+        // }
+        // return false;
     }
 
     protected function handleFailedTokens($report, User $user)
