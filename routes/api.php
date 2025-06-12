@@ -34,7 +34,6 @@ Route::put('checkAndVerifyBio/{VerCode}', [AuthController::class, 'checkAndVerif
 Route::get('resetPasswordSendVerCode/{email}', [AuthController::class, 'resetPasswordSendVerCode']);
 Route::put('verifyAndChanegPassword/', [AuthController::class, 'verifyAndChanegPassword']);
 
-//jj
 
 // Require Auth for CRUD operations
 Route::middleware('auth:sanctum')->group(function () {
