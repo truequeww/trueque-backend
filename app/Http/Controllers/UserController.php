@@ -61,21 +61,17 @@ class UserController extends Controller
                 $imagePaths = [];
                 foreach ($request->file('profileImg') as $image) {
                     try {
-                        $filename = 'user/' . $image->getClientOriginalName();
-                        Storage::disk('s3')->put($filename, file_get_contents($image), 'public');
-                        $url = Storage::disk('s3')->url($filename);
+                        // $filename = 'user/' . $image->getClientOriginalName();
+                        // Storage::disk('s3')->put($filename, file_get_contents($image), );
+                        // $url = Storage::disk('s3')->url($filename);
+                        // $imagePaths[] = $url;
+
+
+                        $path = $image->store('user', 's3');
+                        $url = Storage::disk('s3')->url($path);
                         $imagePaths[] = $url;
 
-                        Log::info('Uploaded file:', [
-                            'filename' => $filename,
-                            'url' => $url,
-                            'size' => $image->getSize()
-                        ]);
                     } catch (\Exception $e) {
-                        Log::error('File upload failed:', [
-                            'error' => $e->getMessage(),
-                            'trace' => $e->getTraceAsString()
-                        ]);
                         throw $e;
                     }
                 }
@@ -92,7 +88,6 @@ class UserController extends Controller
                         $oldFilePath = ltrim($parsedUrl['path'], '/');
                         if (Storage::disk('s3')->exists($oldFilePath)) {
                             Storage::disk('s3')->delete($oldFilePath);
-                            Log::info('Deleted old profile image from S3:', ['path' => $oldFilePath]);
                         }
                     }
                 }
@@ -122,7 +117,7 @@ class UserController extends Controller
             $user->update($data);
             $user->save();
 
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'data' => $user->profile_picture]);
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'User not found'], 404);

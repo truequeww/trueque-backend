@@ -41,14 +41,19 @@ class AuthController extends Controller
             'address.longitude' => 'required|numeric',    // longitude
         ]);
 
-        $image = $request->file('profileImg');
-        $filename = 'users/' . $image[0]->getClientOriginalName();
+        // $image = $request->file('profileImg');
+        // $filename = 'users/' . $image[0]->getClientOriginalName();
 
-        // Store with public visibility
-        Storage::disk('s3')->put($filename, file_get_contents($image[0]), 'public');
-        $url = Storage::disk('s3')->url($filename);
+        // // Store with public visibility
+        // Storage::disk('s3')->put($filename, file_get_contents($image[0]), );
+        // $url = Storage::disk('s3')->url($filename);
+
+        $path = $request->file('profileImg')[0]->store('user', 's3');
+        $url = Storage::disk('s3')->url($path);
+
+
         if (empty($url)) {
-            throw new \Exception("Failed to generate URL for file: $filename");
+            throw new \Exception("Failed to generate URL for file:");
         }
 
         $addressData = [

@@ -93,17 +93,19 @@ class ThingController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     try {
-                        // Generate unique filename
-                        $filename = 'things/' . uniqid() . '_' . $image->getClientOriginalName();
+                        // // Generate unique filename
+                        // $filename = 'things/' . uniqid() . '_' . $image->getClientOriginalName();
+                        // // Store with public visibility
+                        // Storage::disk('s3')->put($filename, file_get_contents($image));
+                        // // Verify URL generation
+                        // $url = Storage::disk('s3')->url($filename);
 
-                        // Store with public visibility
-                        Storage::disk('s3')->put($filename, file_get_contents($image), 'public');
+                        $path = $image->store('things', 's3');
+                        $url = Storage::disk('s3')->url($path);
 
 
-                        // Verify URL generation
-                        $url = Storage::disk('s3')->url($filename);
                         if (empty($url)) {
-                            throw new \Exception("Failed to generate URL for file: $filename");
+                            throw new \Exception("Failed to generate URL for file:");
                         }
 
                         $imagePaths[] = $url;
@@ -229,9 +231,13 @@ class ThingController extends Controller
                 $imagePaths = [];
                 foreach ($request->file('imagesUrl') as $image) {
                     try {
-                        $filename = 'things/' . $image->getClientOriginalName();
-                        Storage::disk('s3')->put($filename, file_get_contents($image), 'public');
-                        $url = Storage::disk('s3')->url($filename);
+                        // $filename = 'things/' . $image->getClientOriginalName();
+                        // Storage::disk('s3')->put($filename, file_get_contents($image));
+                        // $url = Storage::disk('s3')->url($filename);
+                        // $imagePaths[] = $url;
+
+                        $path = $image->store('things', 's3');
+                        $url = Storage::disk('s3')->url($path);
                         $imagePaths[] = $url;
 
                     } catch (\Exception $e) {
