@@ -36,4 +36,4 @@ EXPOSE 9000
 
 # 🚀 Start server (not using php artisan serve!)
 # CMD php -S 0.0.0.0:8000 -t public
-CMD php artisan migrate && php artisan db:seed && php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=9000
+CMD php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=9000
