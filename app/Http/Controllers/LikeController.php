@@ -105,7 +105,8 @@ class LikeController extends Controller
         ], 201);
     }
 
-    public function loadSwipes(Request $request, NotificationService $notificationService)
+    // public function loadSwipes(Request $request, NotificationService $notificationService)
+    public function loadSwipes(Request $request)
     {
         $authUserId = auth()->id();
         $authUser = auth()->user();
