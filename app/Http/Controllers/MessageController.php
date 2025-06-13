@@ -16,7 +16,8 @@ class MessageController extends Controller
         return Message::with(['chat', 'user'])->get();
     }
 
-    public function store(Request $request, NotificationService $notificationService)
+    // public function store(Request $request, NotificationService $notificationService)
+    public function store(Request $request)
     {
         // Get the authenticated user's ID
         $userid = auth()->id();

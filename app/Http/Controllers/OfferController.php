@@ -46,7 +46,8 @@ class OfferController extends Controller
         return response()->json(null, 204);
     }
 
-    public function createOffer(Request $request, NotificationService $notificationService)
+    // public function createOffer(Request $request, NotificationService $notificationService)
+    public function createOffer(Request $request)
     {
         $authId = auth()->id();
 
@@ -224,7 +225,8 @@ class OfferController extends Controller
         ]);
     }
 
-    public function changeOfferStatus(Request $request, NotificationService $notificationService)
+    // public function changeOfferStatus(Request $request, NotificationService $notificationService)
+    public function changeOfferStatus(Request $request)
     {
         // Validate the incoming request
         $request->validate([
