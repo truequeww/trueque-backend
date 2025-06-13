@@ -195,7 +195,7 @@ class LikeController extends Controller
                             'is_read' => false,
                         ]);
 
-                        $success = $notificationService->sendNotificationToUser($us, $title, $body, $data);
+                        // $success = $notificationService->sendNotificationToUser($us, $title, $body, $data);
 
                     }
 

@@ -53,7 +53,7 @@ class MessageController extends Controller
                 "data" => $message->toArray(),
             ];
 
-        $success = $notificationService->sendNotificationToUser($userToNotify, $title, $body, $data);
+        // $success = $notificationService->sendNotificationToUser($userToNotify, $title, $body, $data);
 
         return response()->json($message, 201);
     }

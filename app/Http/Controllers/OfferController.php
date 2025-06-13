@@ -130,7 +130,7 @@ class OfferController extends Controller
                 ],
             ];
 
-            $success = $notificationService->sendNotificationToUser($userToNotify, $title, $body, $data);
+            // $success = $notificationService->sendNotificationToUser($userToNotify, $title, $body, $data);
 
 
 
@@ -278,7 +278,7 @@ class OfferController extends Controller
                     ],
                 ];
 
-                $success = $notificationService->sendNotificationToUser($userToNotify, $title, $body, $data);
+                // $success = $notificationService->sendNotificationToUser($userToNotify, $title, $body, $data);
 
             }
 
